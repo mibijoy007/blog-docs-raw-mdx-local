@@ -38,7 +38,7 @@ export  function LinksTree() {
 
                                     {/* {' >> >>'} */}
                                     <Link href={nItems.path}
-                                        className="hover:underline text-current font-semibold"
+                                        className="hover:text-blue-600 text-black dark:text-white font-semibold"
                                     > {formatedTitle(nItems.name)} </Link>
                                     {/* now nn itmes */}
                                     {
@@ -47,7 +47,7 @@ export  function LinksTree() {
                                                 <li className="my-1">
                                                     {/* {' >> >> >> '} */}
                                                     <Link href={nnItems.path}
-                                                        className=" text-gray-800 dark:text-gray-300 hover:text-gray-500"
+                                                        className=" text-gray-800 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-600 font-normal"
 
                                                     > {formatedTitle(nnItems.name)} </Link>
 

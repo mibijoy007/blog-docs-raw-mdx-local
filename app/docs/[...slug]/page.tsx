@@ -1,150 +1,337 @@
-
 import fs from "node:fs";
-
 import { compileMDX } from "next-mdx-remote/rsc";
 import path from "node:path";
 import Link from "next/link";
 import { formatedTitle } from "@/lib/utils";
-import type { MDXComponents } from 'mdx/types'
-// import React, { DetailedHTMLProps, HTMLAttributes } from "react";
+import type { MDXComponents } from "mdx/types";
+import React, { DetailedHTMLProps, HTMLAttributes } from "react";
 
 
-import remarkGfm from 'remark-gfm'
-import rehypePrettyCode from 'rehype-pretty-code'
-// import rehypeHighlight from 'rehype-highlight'
+import remarkGfm from "remark-gfm";
+// import rehypePrettyCode from "rehype-pretty-code";
+import rehypeHighlight from "rehype-highlight";
 
-import 'highlight.js/styles/github-dark.css'
+// //remember whenever change themes we have to change it too
+// node_modules>highlightjs>styles>(choose-your-css-file) only choose which are there
+// import 'highlight.js/styles/solarized-dark.css';   // this one is not there so wouldn't work
+import 'highlight.js/styles/atom-one-dark-reasonable.css'
+// import 'highlight.js/styles/github-dark.css'
+// // *** also no need to put {theme : "theme-name"} in (compileMDX)
 
-export const options = {
-  theme: 'github-dark', // Or path to a theme JSON file
-  keepBackground: true, // Optional: Keeps background color from the theme
-};
+// import rehypeToc from "rehype-toc";
+import rehypeSlug from "rehype-slug";
 
+export async function generateStaticParams() {
+  // Get the list of all MDX files from the docs folder
+  const docsDir = path.join(process.cwd(), "content", "docs");
+  const files = await fs.promises.readdir(docsDir);
 
-const components :  MDXComponents = {
+  // Generate paths based on the slugs in the directory
+  const paths = files.map((slug) => {
+    return {
+      slug: slug.split("/"),
+    };
+  });
+
+  return paths;
+}
+//dynamically  importing
+const CodeComponent = dynamic(()=> import("../../../components/CopyCode"), {ssr:false,})
+
+const customComponents: MDXComponents = {
   // Add any custom components
-  // pre: ({children, ...props} : DetailedHTMLProps<HTMLAttributes<HTMLPreElement>,HTMLPreElement>) => (
-  //   <pre {...props} className=" ">
-  //     <code className="language-js">
-
-  //     {children}
-  //     </code>
-  //   </pre>
-  // ),
-
-  // p: ({ children, ...props }: DetailedHTMLProps<HTMLAttributes<HTMLParagraphElement>,HTMLParagraphElement>) => (
-  //   <p className=" text-blue-500" {...props} >
-  //     {children}
-  //   </p>
-  // ),
-
-  // // the following doesn't work as we didn't passed any props
-  // h1: ({ children }: { children: React.ReactNode }) => (
-  //   <h1 style={{ color: 'red', fontSize: '48px' }} className=''>{children}</h1>
-  // ),
-
-  // h1: ({
-  //   children,
-  //   ...props
-  // }: DetailedHTMLProps<HTMLAttributes<HTMLHeadingElement>, HTMLHeadingElement> ) => (
-  //   // // this created problem so we're not giving children any type also it' not necessary
-  // // }: DetailedHTMLProps<HTMLAttributes<HTMLHeadingElement>, HTMLHeadingElement> & {children:React.ReactNode}) => (
-  //   <h1 {...props} className="text-4xl font-bold text-red-400 prose">
-  //     {children}
-  //   </h1>
-  // ),
-
+  pre: ({ children, ...props }: DetailedHTMLProps<HTMLAttributes<HTMLPreElement>, HTMLPreElement>) => (
+    <pre {...props} className=" p-0 rounded-lg border border-gray-500 ">
+      <CodeComponent children={children} props={props}/>
+    </pre>
+  ),
 };
+
+// import { visit } from 'unist-util-visit'
+// import { Root, Heading } from 'mdast';
+// import { Plugin } from 'unified';
+
+export interface TocItem {
+  id: string;
+  text: string;
+  level: number;
+}
+// export const remarkHeadingsWithIdAndTOC:Plugin<[HeadingItem[]],Root> = (headingsArray:HeadingItem[]) => {
+//   return (tree : Root)  => {
+//     visit(tree,'heading',(node:Heading) => {
+//       if(!node.children || !node.children.length) return;
+
+//       //getting text from heading tags
+//       const text = node.children.filter((child) => child.type === 'text').map((child) => (child as {value:string}).value ).join('');
+//       console.log('text >> ', text);
+//       //generate a slug
+//       // text = 'asdf'
+//       const id = text.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'')
+//       console.log('id >> ',id);
+
+//       //adding id to the headings
+//       node.data ={
+//         hProperties : {
+//           id,
+//         }
+//       }
+
+//       headingsArray.push({
+//         id,
+//         text,
+//         level:node.depth  // for h1, h2 etc
+//       })
+//       console.log('headingsArray >> ', headingsArray);
+
+//     })
+//   }
+// }
+
+// Ensure the function matches the Plugin signature
+
+// import { Node } from 'unist';
+// import { TableOfContents } from "@/components/Toc";
+
+// export function extractTOC(): TocItem[] {
+//   const headings: TocItem[] = [];
+
+//   visit(tree, 'element', (node: any) => {
+//     if (['h1', 'h2', 'h3', 'h4', 'h5', 'h6'].includes(node.tagName)) {
+//       const level = parseInt(node.tagName.charAt(1));
+//       const text = node.children[0]?.value || '';
+//       const id = node.properties?.id || '';
+
+//       if (id && text) {
+//         headings.push({ id, text, level });
+//       }
+//     }
+//   });
+
+//   return headings;
+// }
+
+import { unified } from 'unified'
+import remarkParse from 'remark-parse'
+import remarkRehype from 'remark-rehype'
+import { visit } from 'unist-util-visit'
+import rehypeStringify from 'rehype-stringify'
+import { TableOfContents } from "@/components/Toc";
+
+
+// import CopyCode from "@/components/CopyCode";
+// import CodeComponent from "@/components/CopyCode";
+import dynamic from "next/dynamic";
+
+
+// import { FaRegCopy } from "react-icons/fa6";
+// import { CopyCode } from "@/components/CopyCode";
+
+// import { Button } from "@/components/ui/button";
+// import { FaRegCopy } from "react-icons/fa6";
+// import copy from 'copy-to-clipboard';
+
+type HeadingNode = {
+  type: 'element';
+  tagName: string; // e.g., "h1", "h2", etc.
+  properties?: { [key: string]: string }; // e.g., { id: "some-id" }
+  children: { type: string; value?: string }[]; // Text or nested elements
+};
+
+export function extractTOCFromSource(source: string): TocItem[] {
+  const headings: TocItem[] = [];
+
+  unified()
+    .use(remarkParse)
+    .use(remarkRehype)
+    .use(rehypeStringify)
+    .use(() => (tree) => {
+      visit(tree, 'element', (node: HeadingNode) => {
+        if (['h1', 'h2', 'h3', 'h4', 'h5', 'h6'].includes(node.tagName)) {
+          // console.log('node >> ',node);
+
+          const level = parseInt(node.tagName.charAt(1));
+          const text = node.children[0]?.value || '';
+          const id = node.properties?.id ||
+            text.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+
+          headings.push({ id, text: text.trim(), level });
+        }
+      });
+    })
+    .processSync(source);
+
+  return headings;
+}
+
+
+
+
+
 
 export default async function SingleBlogPage({
   params,
 }: {
   params: { slug: string[] };
 }) {
-
-
   // console.log("FULL PARAMS:", params);
 
-  const slugPath = params.slug.join('/');
-  const filePath = path.join(process.cwd(), 'content', 'docs', slugPath, 'page.mdx');
+  const slugPath = params.slug.join("/");
+  const filePath = path.join(
+    process.cwd(),
+    "content",
+    "docs",
+    slugPath,
+    "page.mdx"
+  );
 
   // const filePath = "./content/docs/1-getting-started/page.mdx";
 
   // console.log("FULL FILE PATH:", filePath);
 
- let breadcrumsBasePath = '/docs'
+  let breadcrumsBasePath = "/docs";
 
   try {
     const fileContent = await fs.promises.readFile(filePath, "utf-8");
 
     // console.log("RAW FILE CONTENT:", fileContent);
 
+    // const headings:HeadingItem[] = [];
+
     const compiledMDX = await compileMDX({
       source: fileContent,
-      components,
+      components : customComponents,
+      // components : {
+      //   code :  CodeComponent
+      // },
       options: {
         parseFrontmatter: true,
         mdxOptions: {
           remarkPlugins: [remarkGfm],
-          rehypePlugins: [
-            // [rehypeHighlight, { theme: 'github-dark' }],
-            [ rehypePrettyCode, { theme: 'github-dark'} ]
-          ]
-        }
-        // rehypePlugins: [[rehypePrettyCode, options]],
-      },
 
+          rehypePlugins: [
+            // [rehypeHighlight, { theme: "defalut" }],
+            // [rehypeHighlight, { theme: 'solarized-dark'  }],
+            // // don't really need to add any theme actually
+            [rehypeHighlight],   
+            // [rehypePrettyCode, { theme: "github-dark",  }],
+            rehypeSlug,
+
+            //this is our custom plugin (visit)
+            // [remarkHeadingsWithIdAndTOC,headings],
+            // [remarkHeadingsWithIDAndTOC,headings],
+
+            //   [rehypeToc,{
+            //     headings : ['h1','h2','h3'],
+            //     // customizeTOC: (toc) => {
+            //     //   // console.log(toc);
+            //     //   return (
+
+            //     //       <nav className="border-l-2 border-gray-200 pl-4">
+            //     //         <h2 className="text-lg font-semibold mb-3">On This Page</h2>
+            //     //         {/* {toc} */}a
+            //     //       </nav>
+
+            //     //   );
+            //     // } ,
+            //     cssClasses: {
+            //       toc: 'toc-container',
+            //       list: 'toc-list',
+            //       listItem: 'toc-item'
+            //     }
+            //   }
+            // ],
+          ],
+        },
+        //
+      },
     });
 
     // console.log("COMPILED MDX:", compiledMDX);
+    // console.log('compiledMDX.content.props.mdxType > ', compiledMDX.content);
+
+    // const toc = extractTOC(compiledMDX.content.props.mdxType)
+    const toc = extractTOCFromSource(fileContent)
+    // console.log('toc >> ', toc);
 
     return (
-      <div className="min-h-screen">
+      <div className="top-10 min-h-screen ">
         {/* sidebar */}
         {/* <div className="flex flex-col items-center justify-center">
           
 
         </div> */}
 
-
         {/* breadcrums */}
-        <div className="flex gap-2 items-center sticky top-[8%] overflow-y-auto bg-background h-10  border-b  border-gray-300 ">
+        <div className="flex-col sticky top-[8%] overflow-y-auto bg-background  text-gray-600 text-sm  dark:text-gray-300  border-gray-300 ">
+          <div className="flex gap-2 items-center h-8">
 
-          <Link href={'/docs'} className="hover:underline ">
+          
+          <Link href={"/docs"} className="hover:underline ">
             {/* Home */}
-           Docs
+            Docs
           </Link>
           {/* {' '}  / {' '} */}
-          {' > '}
+          {" > "}
 
           {/* {slug} */}
-          {params.slug.map((item,index) => {
-            breadcrumsBasePath +=  '/'+item;
+          {params.slug.map((item, index) => {
+            breadcrumsBasePath += "/" + item;
             return (
-            <div key={item} >
-              <Link href={breadcrumsBasePath} className="hover:underline">
-                {formatedTitle(item)}
-              </Link>
-              {index < params.slug.length - 1 && ' > '}
-              {/* {path = path + '/'} */}
-            </div>)
-          }
-          )}
+              <div key={item}>
+                <Link href={breadcrumsBasePath} className="hover:underline">
+                  {formatedTitle(item)}
+                </Link>
+                {index < params.slug.length - 1 && " > "}
+                {/* {path = path + '/'} */}
+              </div>
+            );
+          })}
 
+          {/* <div className="dark:border-gray-700 border-gray-300 h-3 w-10"/> */}
+
+
+          </div>
+          <div className="bg-blue-600 dark:h-[1px] h-[2px] w-[35rem] mt-1" />
         </div>
 
         {/* main contant */}
-        <div className=' ml-5 mt-4 prose dark:prose-invert '>
-        {/* prose dark:prose-invert */}
-          Frontmatter Title  : {compiledMDX.frontmatter.title as string}
+        <div className="flex ">
 
-          <article>
-            {compiledMDX.content}
-          </article>
+
+          <div className=" ml-5  prose dark:prose-invert ">
+
+            {/* Frontmatter Title : {compiledMDX.frontmatter.title as string} */}
+
+            <article className="w-[42rem]">{compiledMDX.content}</article>
+          </div>
+
+          {/* toc */}
+          <div className="ml-40 flex  ">
+            <aside>
+              <TableOfContents headings={toc} />
+            </aside>
+          </div>
         </div>
-
-        {/* sitetitles */}
-        <div></div>
+        {/* Toc */}
+        {/* <div>
+          <aside>
+          <nav>
+          <ul>
+            {
+            
+            // compiledMDX.headings?.map(({ id, text, level }) => (
+            //   <li key={id} style={{ marginLeft: `${(level - 1) * 16}px` }}>
+            //     <a href={`#${id}`} className="hover:underline">
+            //       {text}
+            //     </a>
+            //   </li>
+            // ))
+            
+            }
+          </ul>
+        </nav>
+          </aside>
+        </div> */}
       </div>
     );
   } catch (error) {

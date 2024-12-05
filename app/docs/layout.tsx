@@ -1,5 +1,6 @@
 // 'use client'
 import { MySidebar } from "@/components/MySidebar"
+import Link from "next/link"
 // import { useMDXComponents } from "@/mdx-components"
 // import { MDXProvider } from "@mdx-js/react"
 
@@ -40,8 +41,13 @@ export default function DashboardLayout({
           </main>
     
           {/* Footer */}
-          <footer className="bg-gray-100 py-4 text-center">
-            <p>© 2024 Documentation Site</p>
+          <footer className="bg-transparent py-4 text-center border-t border-gray-600">
+            <p>© 2024 Powered by {" "}
+              <Link href={'https://github.com/mibijoy007'} className="hover:underline text-blue-500">
+                mibijoy007
+              </Link>
+              
+              </p>
           </footer>
         </div>
     
