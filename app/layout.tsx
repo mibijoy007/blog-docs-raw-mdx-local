@@ -20,7 +20,7 @@ import { cn } from "@/lib/utils";
 // });
 
 
-import {Inter } from "next/font/google"
+import { Inter } from "next/font/google"
 import { SiteHeader } from "@/components/SiteHeader";
 import { ThemeProvider } from "@/components/theme-provider";
 // import { Providers } from "@/components/Providers";
@@ -49,31 +49,29 @@ export default function RootLayout({
         className={cn(
           "min-h-screen bg-background font-sans antialiased"
           , interFont.variable
-          
+
         )}
       >
         {/* <Providers> */}
         <ThemeProvider
-        attribute="class"
-        defaultTheme="system"
-        enableSystem
-        disableTransitionOnChange
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
         >
-            
-        
 
-        <div className="relative flex min-h-dvh flex-col bg-background">
-        <main className="flex-1">
+          <div className="relative flex min-h-dvh flex-col bg-background">
+            <main className="flex-1">
 
-        {/* <Nav/> */}
-        <SiteHeader/>
-        {children}
-        </main>
-        </div>
+              {/* <Nav/> */}
+              <SiteHeader />
+              {children}
+            </main>
+          </div>
         </ThemeProvider>
-{/* </Providers> */}
+        {/* </Providers> */}
       </body>
-      
+
     </html>
   );
 }

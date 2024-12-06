@@ -35,6 +35,7 @@ export async function generateStaticParams() {
 
   return paths;
 }
+
 //dynamically  importing
 const CodeComponent = dynamic(()=> import("../../../components/CopyCode"), {ssr:false,})
 
@@ -42,7 +43,8 @@ const customComponents: MDXComponents = {
   // Add any custom components
   pre: ({ children, ...props }: DetailedHTMLProps<HTMLAttributes<HTMLPreElement>, HTMLPreElement>) => (
     <pre {...props} className=" p-0 rounded-lg border border-gray-500 ">
-      <CodeComponent children={children} props={props}/>
+      {/* <CodeComponent children={children} /> */}
+      <CodeComponent>{children}</CodeComponent>
     </pre>
   ),
 };

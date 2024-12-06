@@ -7,7 +7,7 @@ import { Menu } from "lucide-react";
 import Link, { LinkProps } from "next/link";
 import { useRouter } from "next/navigation";
 // import { Icons } from "./icons";
-import { siteConfig } from "@/config/site";
+import { siteConfig } from "@/lib/siteConfig";
 import { FaCloudSun, FaGithub } from "react-icons/fa";
 import { FaSquareXTwitter } from "react-icons/fa6";
 
@@ -68,13 +68,7 @@ interface MobileLinkProps extends LinkProps {
   className?: string;
 }
 
-function MobileLink({
-  href,
-  onOpenChange,
-  children,
-  className,
-  ...props
-}: MobileLinkProps) {
+function MobileLink({href,onOpenChange,children,className,...props}: MobileLinkProps) {
   const router = useRouter();
   return (
     <Link

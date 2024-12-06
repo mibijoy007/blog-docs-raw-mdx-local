@@ -27,13 +27,13 @@ The blog will include a list of posts with a title, body, and date, rendered wit
 
 Just to demonstrate how quickly we can start working, let's start with a new blank Next.js project.
 
-```txt
+```bash
 npx create-next-app@latest --typescript --tailwind --experimental-app --eslint contentlayer-example
 ```
 
 Answer any prompts that appear, then change into the new `contentlayer-example` directory.
 
-```txt
+```bash
 cd contentlayer-example
 ```
 
@@ -41,7 +41,7 @@ cd contentlayer-example
 
 Install Contentlayer and the Next.js plugin, along with a helper package for dates.
 
-```txt
+```bash
 npm install contentlayer next-contentlayer date-fns
 ```
 
@@ -91,7 +91,7 @@ This configures the Next.js build process and your editor to know where to look 
 
 Add the `.contentlayer` directory into your `.gitignore` file to ensure each build of your app will have the latest generated data and you do not run into issues with Git.
 
-```bash
+```.gitignore
 # .gitignore
 
 # ...
@@ -138,7 +138,7 @@ Create a few markdown files in a `posts` directory and add some content to those
 
 Here's an example of what a post file at `posts/post-01.md` might look like:
 
-```txt
+```mdx
 ---
 title: My First Post
 date: 2021-12-24

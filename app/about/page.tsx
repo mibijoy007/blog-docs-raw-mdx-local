@@ -1,5 +1,5 @@
 import { buttonVariants } from "@/components/ui/button"
-import { siteConfig } from "@/config/site"
+import { siteConfig } from "@/lib/siteConfig"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
 

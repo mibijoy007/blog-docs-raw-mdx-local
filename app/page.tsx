@@ -1,5 +1,5 @@
 import { buttonVariants } from "@/components/ui/button";
-import { siteConfig } from "@/config/site";
+import { siteConfig } from "@/lib/siteConfig";
 import { cn } from "@/lib/utils";
 // import { posts } from "#site/content";
 import Link from "next/link";
@@ -19,7 +19,7 @@ export default function Home() {
           </p>
           <div className="flex flex-col gap-4 justify-center sm:flex-row">
             <Link
-              href="/docs"
+              href="/docs/1-getting-started"
               className={cn(buttonVariants({ size: "lg" }), "w-full sm:w-fit")}
             >
               See Docs
