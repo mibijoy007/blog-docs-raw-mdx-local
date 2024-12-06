@@ -1,11 +1,6 @@
-// 'use client'
 
-// import type { Metadata } from "next";
-// import localFont from "next/font/local";
 import "./globals.css";
-// import { Nav } from "./components/nav";
 import { cn } from "@/lib/utils";
-
 
 //local fonts
 // const geistSans = localFont({
@@ -13,24 +8,15 @@ import { cn } from "@/lib/utils";
 //   variable: "--font-geist-sans",
 //   weight: "100 900",
 // });
-// const geistMono = localFont({
-//   src: "./fonts/GeistMonoVF.woff",
-//   variable: "--font-geist-mono",
-//   weight: "100 900",
-// });
-
 
 import { Inter } from "next/font/google"
 import { SiteHeader } from "@/components/SiteHeader";
 import { ThemeProvider } from "@/components/theme-provider";
-// import { Providers } from "@/components/Providers";
-
 
 const interFont = Inter({
   subsets: ["latin"],
   variable: "--font-sans",
 })
-
 
 // export const metadata: Metadata = {
 //   title: "Create Next App",
@@ -44,34 +30,26 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-
       <body
         className={cn(
           "min-h-screen bg-background font-sans antialiased"
           , interFont.variable
-
         )}
       >
-        {/* <Providers> */}
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
         >
-
           <div className="relative flex min-h-dvh flex-col bg-background">
             <main className="flex-1">
-
-              {/* <Nav/> */}
               <SiteHeader />
               {children}
             </main>
           </div>
         </ThemeProvider>
-        {/* </Providers> */}
       </body>
-
     </html>
   );
 }

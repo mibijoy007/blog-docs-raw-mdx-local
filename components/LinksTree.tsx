@@ -31,7 +31,6 @@ export  function LinksTree() {
 
                         </div>
 
-                        {/* <Link href={items.path} className="hover:underline font-extrabold text-xl"> {formatedTitle(items.name)} </Link> */}
                         {items.children.map((nItems) => (
                             <ul key={nItems.name} >
                                 <li className="mb-3">

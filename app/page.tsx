@@ -1,12 +1,10 @@
 import { buttonVariants } from "@/components/ui/button";
 import { siteConfig } from "@/lib/siteConfig";
 import { cn } from "@/lib/utils";
-// import { posts } from "#site/content";
 import Link from "next/link";
-// import { PostItem } from "@/components/post-item";
 
 export default function Home() {
-  // const latestPosts = sortPosts(posts).slice(0, 5);
+
   return (
     <>
       <section className="space-y-6 pb-8 pt-6 md:pb-12 md:mt-10 lg:py-32">
@@ -56,21 +54,6 @@ This lightweight, high-performance tool could easily reach 100K+ weekly download
 
 Now imagine what that kind of project could do for your portfolio. Wouldn’t a recruiter stop and take notice? This could be the project that sets you apart and gets you that job offer.
         </p>
-        {/* <ul className="flex flex-col">
-          {latestPosts.map((post) => (
-            post.published && (
-              <li key={post.slug} className="first:border-t first:border-border">
-                <PostItem
-                  slug={post.slug}
-                  title={post.title}
-                  description={post.description}
-                  date={post.date}
-                  tags={post.tags}
-                />
-              </li>
-            )
-          ))}
-        </ul> */}
       </section>
     </>
   );

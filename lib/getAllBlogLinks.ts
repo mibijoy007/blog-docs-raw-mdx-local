@@ -4,8 +4,6 @@ import path from 'path';
 
 const CONTENT_DIR = './content/docs';
 
-// export function getMdxLinks() {
-
 export function getAllBlogLinks() {
   const links : string[] = [];
 
@@ -20,7 +18,6 @@ export function getAllBlogLinks() {
       if (stats.isDirectory()) {
         walkDir(fullPath);
       } else if (file.endsWith('.mdx')) {
-        // const relativePath = fullPath.replace(CONTENT_DIR, '').replace(/page\.mdx$/, '');
         const relativePath = fullPath.replace(/page\.mdx$/, '').replace('content', '')
         links.push(relativePath);
       }
@@ -32,8 +29,6 @@ export function getAllBlogLinks() {
   const finalLinks : string[] = links.map((link) => link.replace(/\\/g, '/'));
 //   console.log('finalLinks >>>',finalLinks);
   
-//   return  finalLinks// Normalize for all OS
-//   return links; // Normalize for all OS
     return makeNestedLinks(finalLinks);
 }
 
@@ -45,7 +40,6 @@ export interface NodeType {
 }
 
 function makeNestedLinks(flatLinks:string[]) {
-
     // console.log("flatLinks >>> ",flatLinks);
     const root : NodeType[] = [];
 

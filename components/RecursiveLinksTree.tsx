@@ -21,12 +21,8 @@ export default function RecursiveLinksTree({allBlogLinksTree}: {allBlogLinksTree
                                  <RecursiveLinksTree allBlogLinksTree={items.children}/>
                                 </div>
                              )
-                            
                             }
-
                         </li>
-
-                   
                 ))}
             </ul>
         </div>

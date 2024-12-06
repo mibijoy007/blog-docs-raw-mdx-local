@@ -1,14 +1,11 @@
 "use client";
 
-
 // import { Icons } from "./icons";
 import Link from "next/link";
 import { siteConfig } from "@/lib/siteConfig";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 import { FaCloudSun } from "react-icons/fa";
-
-
 
 export default function Nav() {
 

@@ -79,9 +79,5 @@
   body {
     @apply bg-background text-foreground;
   }
-
-  /* .prose pre {
-    @apply bg-transparent text-inherit;
-  } */
 }
  
